@@ -1,0 +1,49 @@
+﻿@model IEnumerable<TH15OTDM.Models.TaiSan>
+<main class="main">
+    <div class="container">
+        <div class="banner"><img src="images/banner.jpg" alt="Banner" /></div>
+
+        <!-- Tài sản mới nhập -->
+        <div class="section-head">
+            <h3>Tài sản mới nhập</h3>
+            <a href="#">Xem tất cả &rsaquo;</a>
+        </div>
+        <div class="grid" id="product-list-container">
+            <partial name="~/Views/Shared/PartialList.cshtml" model="Model" />
+        </div>
+    </div>
+</main>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Bắt sự kiện khi click vào các thẻ a có class là category-link (từ ViewComponent menu của bạn)
+        $(document).on('click', '.category-link', function (e) {
+            e.preventDefault(); // Chặn chuyển trang mặc định
+
+            var maloai = $(this).data('id'); // Lấy mã loại từ thuộc tính data-id="..."
+
+            // Thêm hiệu ứng active trực quan cho menu (tùy chọn)
+            // $('.menu ul li').removeClass('active');
+            // $(this).parent('li').addClass('active');
+
+            // Gọi AJAX tới Action trong Controller
+            $.ajax({
+                url: '/BaiThi/FilterByCategory', // Thay 'BaiThi' bằng tên Controller thực tế của bạn
+                type: 'GET',
+                data: { maloai: maloai },
+                success: function (result) {
+                    // Thay thế nội dung cũ bằng danh sách sản phẩm mới trả về từ Partial View
+                    $('#product-list-container').html(result);
+                },
+                error: function (xhr) {
+                    console.log("Lỗi khi lọc sản phẩm: ", xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
